@@ -1,3 +1,4 @@
+import SundialKit
 import SwiftUI
 
 extension WCMessage {

@@ -2,13 +2,10 @@ import Combine
 import Foundation
 import SwiftUI
 import WatchConnectivity
+import SundialKit
 
 class SundailObject: ObservableObject {
-  #if os(iOS)
-    static let isCompanionAppInstalledKeyPath: KeyPath<WCSession, Bool> = \.isWatchAppInstalled
-  #elseif os(watchOS)
-    static let isCompanionAppInstalledKeyPath: KeyPath<WCSession, Bool> = \.isCompanionAppInstalled
-  #endif
+
 
   let lastColorSendingSubject = PassthroughSubject<Color, Never>()
 
@@ -37,20 +34,20 @@ class SundailObject: ObservableObject {
   }
 
   init() {
-    wcObject.activationStateSubject.assignOnMain(\.activationState, to: &$activationState)
-    wcObject.isReachableSubject.assignOnMain(\.isReachable, to: &$isReachable)
+    wcObject.activationStatePublisher.assignOnMain(to: &self.$activationState)
+    wcObject.isReachablePublisher.assignOnMain(to: &self.$isReachable)
 
-    wcObject.isCompanionInstalledSubject.assignOnMain(Self.isCompanionAppInstalledKeyPath, to: &$isCompanionAppInstalled)
+    wcObject.isPairedAppInstalledPublisher.assignOnMain(to: &self.$isCompanionAppInstalled)
 
     #if os(iOS)
-      wcObject.isPairedSubject.assignOnMain(\.isPaired, to: &$isPaired)
+    wcObject.isPairedPublisher.assignOnMain(to: &self.$isPaired)
     #endif
 
     lastColorSendingSubject.share().compactMap(WCMessage.message(fromColor:)).subscribe(wcObject.sendingMessageSubject).store(in: &cancellables)
 
-    wcObject.messageReceivedSubject.compactMap(receivedMessage(_:)).assignOnMain(to: &$lastColorReceived)
+    wcObject.messageReceivedPublisher.compactMap(receivedMessage(_:)).assignOnMain(to: &$lastColorReceived)
 
-    let replyReceived = wcObject.replyMessageSubject.tryCompactMap(receivedReply(_:))
+    let replyReceived = wcObject.replyMessagePublisher.tryCompactMap(receivedReply(_:))
 
     let (replyReceivedValue, replyReceivedError) = replyReceived.neverPublishers()
 

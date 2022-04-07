@@ -6,10 +6,6 @@ extension Publisher {
     receive(on: DispatchQueue.main).assign(to: &published)
   }
 
-  func assignOnMain<OutputType>(_ keyPath: KeyPath<Self.Output, OutputType>, to published: inout Published<OutputType>.Publisher) where Self.Failure == Never {
-    map(keyPath).assign(to: &published)
-  }
-
   func neverPublishers() -> (AnyPublisher<Output, Never>, AnyPublisher<Failure, Never>) {
     let failurePublisher = share().map { _ in nil as Failure? }.catch { error in
       Just(error)
