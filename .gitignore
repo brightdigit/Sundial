@@ -118,7 +118,7 @@ iOSInjectionProject/
 ### SwiftPackageManager ###
 Packages
 xcuserdata
-*.xcodeproj
+#*.xcodeproj
 
 
 ### SwiftPM ###
@@ -129,7 +129,7 @@ xcuserdata
 ## Xcode 8 and earlier
 
 ### Xcode Patch ###
-*.xcodeproj/*
+#*.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
 !*.xcworkspace/contents.xcworkspacedata
@@ -139,4 +139,5 @@ xcuserdata
 # End of https://www.toptal.com/developers/gitignore/api/swift,swiftpm,swiftpackagemanager,xcode,macos
 
 **/*.pxd/QuickLook/*.*
-**/*.appiconset/*.png
+#**/*.appiconset/*.png
+#PLists/**/*.plist
