@@ -126,6 +126,7 @@ class SundailObject: ObservableObject {
   var cancellables = [AnyCancellable]()
 
   public func forceActivate() {
+    nwObject.start(queue: .global())
     try! wcObject.activate()
   }
 
